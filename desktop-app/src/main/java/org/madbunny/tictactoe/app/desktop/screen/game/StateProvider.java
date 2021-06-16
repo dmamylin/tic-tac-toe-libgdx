@@ -4,7 +4,6 @@ import org.madbunny.tictactoe.client.HttpClient;
 import org.madbunny.tictactoe.core.datamodel.GameState;
 import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.util.Calendar;
 
 class StateProvider {
@@ -34,7 +33,7 @@ class StateProvider {
     public GameState startNewGame() {
         try {
             currentState = client.startNewGame().orElse(currentState);
-        } catch (IOException e) {
+        } catch (Exception e) {
             onFetchError("startNewGame", e);
         }
         return currentState;
@@ -43,7 +42,7 @@ class StateProvider {
     public GameState setCross(int row, int col) {
         try {
             currentState = client.setCross(row, col).orElse(currentState);
-        } catch (IOException e) {
+        } catch (Exception e) {
             onFetchError("setCross", e);
         }
         return currentState;
@@ -52,7 +51,7 @@ class StateProvider {
     public GameState setZero(int row, int col) {
         try {
             currentState = client.setZero(row, col).orElse(currentState);
-        } catch (IOException e) {
+        } catch (Exception e) {
             onFetchError("setZero", e);
         }
         return currentState;
@@ -62,14 +61,14 @@ class StateProvider {
         GameState result = null;
         try {
             result = client.getGameState().orElse(currentState);
-        } catch (IOException e) {
+        } catch (Exception e) {
             onFetchError("fetchGameState", e);
         }
         lastFetchTimeMs = Calendar.getInstance().getTimeInMillis();
         return result;
     }
 
-    private void onFetchError(String method, IOException e) {
+    private void onFetchError(String method, Exception e) {
         var msg = String.format("Cannot fetch game state in method %s from server due to an error: %s", method, e.getMessage());
         logger.error(msg);
     }
